@@ -1,0 +1,17 @@
+{
+  "name": "ecommerce-website",
+  "version": "1.0.0",
+  "description": "An ecommerce website which can be used to list and sell products by vendors to customers",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.2",
+    "mongoose": "^8.10.1"
+  }
+}
