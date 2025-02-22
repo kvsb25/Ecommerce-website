@@ -12,6 +12,11 @@ router.route("/dashboard/sales")
         res.send("sales page");
     })
 
+router.route("/profile")
+    .get((req, res)=>{
+        res.send("vendor's profile page")
+    })
+
 router.route("/products")
     .get((req, res)=>{
         res.send("products belonging to vendor");
