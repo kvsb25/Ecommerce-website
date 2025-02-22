@@ -13,19 +13,19 @@ router.route('/')
         res.send("httpStatus");
     })
 
+router.route("/checkout")
+    .get((req, res)=>{
+        res.send("checkout page");
+    })
+
 router.route("/:orderId")
     .get((req, res)=>{
-        res.send("order with orderId details");
+        res.send("order details with orderId");
     })
     .delete((req, res)=>{
         // cancel an order
         // delete an order by id from DB 
         res.send("httpStatus");
-    })
-
-router.route("/checkout")
-    .get((req, res)=>{
-        res.send("checkout page");
     })
 
 module.exports = router;
