@@ -1,10 +1,22 @@
 const express = require("express");
 const app = express();
+const mongoose = require("mongoose");
+const cookieParser = require('cookie-parser');
 const userRouter = require("./routes/user.js");
 const customerRouter = require("./routes/customer.js");
 const vendorRouter = require("./routes/vendor.js");
 const ordersRouter = require("./routes/order.js");
 const generalPlatformRouter = require("./routes/generalPlatform.js");
+
+main().catch(err => console.log(err));
+
+async function main() {
+  await mongoose.connect('mongodb://127.0.0.1:27017/ecommerceTest');
+}
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser(/*process.env.COOKIE_SECRET*/));
 
 app.use("/", generalPlatformRouter);
 app.use("/user", userRouter);
