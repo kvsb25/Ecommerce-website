@@ -2,23 +2,6 @@ const axios = require('axios');
 
 const BACKEND_URL = "http://localhost:3000";
 
-// describe("JWT Authentication", ()=>{
-//     let token;
-
-//     test('jwt is being sent in an httpOnly cookie', async ()=>{
-//         const res = await axios.post(`${BACKEND_URL}/user/login`, {username:"user4", password:"user1"}, {withCredentials:true});
-//         expect(res.status).toBe(200)
-//         expect(res.headers["set-cookie"]).toBeDefined();
-        
-//         authCookie = res.headers["set-cookie"].find(c => c.startsWith("token="));
-//         console.log(authCookie);
-//         expect(authCookie).toBeDefined();
-//     });
-
-//     test('able to verify a jwt token', async ()=>{
-//     })
-// })
-
 describe("Authentication", ()=>{
     test('login - token is being sent if the user is authenticated', async ()=>{
         const res = await axios.post(`${BACKEND_URL}/user/login`, {username:"user4", password:"user1"}, {withCredentials:true});
