@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const {verifyUser} = require("../middleware.js");
 
 router.route('/')
     .get((req, res)=>{
@@ -14,9 +15,9 @@ router.route('/')
     })
 
 router.route("/checkout")
-    .get((req, res)=>{
+    .get(verifyUser, (req, res)=>{
         res.send("checkout page");
-    })
+    });
 
 router.route("/:orderId")
     .get((req, res)=>{

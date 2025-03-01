@@ -44,7 +44,7 @@ module.exports.loginUser = async (req, res) => {
     try {
         console.log(req.body);
 
-        if (!req.body.username) return res.status("400").send("username might be wrong");
+        if (!req.body.username) return res.status(400).send("username might be wrong");
 
         let foundUser = await User.findOne({ username: req.body.username });
 
@@ -59,7 +59,7 @@ module.exports.loginUser = async (req, res) => {
                 sameSite: 'Strict'
             });
 
-            return res.status(200).send("logged in");
+            return res.status(200).send(accessToken);
 
         } else {
             return res.status(403).send("wrong password");
