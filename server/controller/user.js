@@ -22,13 +22,20 @@ module.exports.signUpUser = async (req, res) => {
             await (new Vendor({ userId: newUser._id })).save();
         }
 
-        const accessToken = jwt.sign({ username: newUser.username, role: newUser.role }, process.env.ACCESS_TOKEN_SECRET);
+        // set expiry jwt and cookie, refresh token for jwt
+        const accessToken = jwt.sign({ username: newUser.username, role: newUser.role }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
+        // const refreshToken = jwt.sign({ username: newUser.username, role: newUser.role }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
 
         res.cookie('token', accessToken, {
             httpOnly: true,
             // secure: true, 
             sameSite: 'Strict'
         });
+        // res.cookie('refreshToken', refreshToken, {
+        //     httpOnly: true,
+        //     // secure: true, 
+        //     sameSite: 'Strict'
+        // });
 
         return res.status(200).send('user registered');
     } catch (e) {
@@ -41,6 +48,7 @@ module.exports.signUpUser = async (req, res) => {
 }
 
 module.exports.loginUser = async (req, res) => {
+    
     try {
         console.log(req.body);
 
@@ -49,17 +57,23 @@ module.exports.loginUser = async (req, res) => {
         let foundUser = await User.findOne({ username: req.body.username });
 
         if (!foundUser) return res.status(400).send("Incorrect username");
-        
+
         if (await bcrypt.compare(req.body.password, foundUser.password)) {
-            const accessToken = jwt.sign({ username: foundUser.username, role: foundUser.role }, process.env.ACCESS_TOKEN_SECRET);
+            const accessToken = jwt.sign({ username: foundUser.username, role: foundUser.role }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
+            // const refreshToken = jwt.sign({ username: foundUser.username, role: foundUser.role }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
 
             res.cookie('token', accessToken, {
                 httpOnly: true,
                 // secure: true, 
                 sameSite: 'Strict'
             });
+            // res.cookie('refreshToken', refreshToken, {
+            //     httpOnly: true,
+            //     // secure: true, 
+            //     sameSite: 'Strict'
+            // });
 
-            return res.status(200).send(accessToken);
+            return res.status(200).send(`${accessToken}`); /*, ${refreshToken }`);*/
 
         } else {
             return res.status(403).send("wrong password");
