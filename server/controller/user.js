@@ -24,18 +24,18 @@ module.exports.signUpUser = async (req, res) => {
 
         // set expiry jwt and cookie, refresh token for jwt
         const accessToken = jwt.sign({ username: newUser.username, role: newUser.role }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
-        // const refreshToken = jwt.sign({ username: newUser.username, role: newUser.role }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
+        const refreshToken = jwt.sign({ username: newUser.username, role: newUser.role }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
 
         res.cookie('token', accessToken, {
             httpOnly: true,
             // secure: true, 
             sameSite: 'Strict'
         });
-        // res.cookie('refreshToken', refreshToken, {
-        //     httpOnly: true,
-        //     // secure: true, 
-        //     sameSite: 'Strict'
-        // });
+        res.cookie('refreshToken', refreshToken, {
+            httpOnly: true,
+            // secure: true, 
+            sameSite: 'Strict'
+        });
 
         return res.status(200).send('user registered');
     } catch (e) {
@@ -48,7 +48,7 @@ module.exports.signUpUser = async (req, res) => {
 }
 
 module.exports.loginUser = async (req, res) => {
-    
+
     try {
         console.log(req.body);
 
@@ -60,18 +60,18 @@ module.exports.loginUser = async (req, res) => {
 
         if (await bcrypt.compare(req.body.password, foundUser.password)) {
             const accessToken = jwt.sign({ username: foundUser.username, role: foundUser.role }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
-            // const refreshToken = jwt.sign({ username: foundUser.username, role: foundUser.role }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
+            const refreshToken = jwt.sign({ username: foundUser.username, role: foundUser.role }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
 
             res.cookie('token', accessToken, {
                 httpOnly: true,
                 // secure: true, 
                 sameSite: 'Strict'
             });
-            // res.cookie('refreshToken', refreshToken, {
-            //     httpOnly: true,
-            //     // secure: true, 
-            //     sameSite: 'Strict'
-            // });
+            res.cookie('refreshToken', refreshToken, {
+                httpOnly: true,
+                // secure: true, 
+                sameSite: 'Strict'
+            });
 
             return res.status(200).send(`${accessToken}`); /*, ${refreshToken }`);*/
 
@@ -82,4 +82,27 @@ module.exports.loginUser = async (req, res) => {
         console.error(err);
         return res.status(500).send("server error");
     }
+}
+
+module.exports.generateToken = (req, res) => {
+    const refreshToken = req.cookies.refreshToken;
+    if (!refreshToken) return res.sendStatus(403);
+
+    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+
+        if(err) return res.sendStatus(403);
+
+        const accessToken = jwt.sign({ username: user.username, role: user.role }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15min' });
+
+        res.cookie('token', accessToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "Strict",
+            maxAge: 15 * 60 * 1000,
+            path: "/"
+        });
+
+        req.user = user;
+        return next();
+    })
 }

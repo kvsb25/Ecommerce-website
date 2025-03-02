@@ -17,4 +17,7 @@ router.route('/login')
     })
     .post(userController.loginUser);
 
+router.route('/generateToken')
+    .get(userController.generateToken);
+
 module.exports = router;
