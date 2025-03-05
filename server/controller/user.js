@@ -63,11 +63,13 @@ module.exports.loginUser = async (req, res) => {
             const refreshToken = jwt.sign({ username: foundUser.username, role: foundUser.role }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
 
             res.cookie('token', accessToken, {
+                signed: true,
                 httpOnly: true,
                 // secure: true, 
                 sameSite: 'Strict'
             });
             res.cookie('refreshToken', refreshToken, {
+                signed: true,
                 httpOnly: true,
                 // secure: true, 
                 sameSite: 'Strict'

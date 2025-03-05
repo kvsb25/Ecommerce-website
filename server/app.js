@@ -16,7 +16,7 @@ async function main() {
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser(/*process.env.COOKIE_SECRET*/));
+app.use(cookieParser(process.env.COOKIE_SECRET));
 
 app.use("/", generalPlatformRouter);
 app.use("/user", userRouter);

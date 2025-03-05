@@ -46,7 +46,8 @@ const cookieParser = require("cookie-parser");
 // }
 
 module.exports.verifyUser = (req, res, next)=>{
-    const token = req.cookies.token;
+    // const token = req.cookies.token;
+    const token = req.signedCookies.token;
     if (!token) return res.status(401).send("unauthenticated")//res.redirect("/user/login");
 
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user)=>{
