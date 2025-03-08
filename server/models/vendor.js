@@ -14,9 +14,9 @@ const vendorSchema = new mongoose.Schema({
 		type: String,
 		// required: true,
 	},
-	gstNumber: {
-		type: String,
-	},
+	// gstNumber: {
+	// 	type: String,
+	// },
 });
 
 // Auto-delete products when stock is 0

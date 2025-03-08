@@ -34,3 +34,7 @@ describe("Authentication", ()=>{
         })
     });
 });
+
+// test - refresh token routes
+
+// test - if all auth middlewares are running fine

@@ -27,14 +27,18 @@ module.exports.signUpUser = async (req, res) => {
         const refreshToken = jwt.sign({ username: newUser.username, role: newUser.role }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
 
         res.cookie('token', accessToken, {
+            signed: true,
             httpOnly: true,
-            // secure: true, 
-            sameSite: 'Strict'
+            // secure: true,
+            maxAge: 15 * 60 * 1000, 
+            // sameSite: 'Strict'
         });
         res.cookie('refreshToken', refreshToken, {
+            signed: true,
             httpOnly: true,
             // secure: true, 
-            sameSite: 'Strict'
+            maxAge: 15 * 60 * 1000,
+            // sameSite: 'Strict'
         });
 
         return res.status(200).send('user registered');
@@ -57,22 +61,25 @@ module.exports.loginUser = async (req, res) => {
         let foundUser = await User.findOne({ username: req.body.username });
 
         if (!foundUser) return res.status(400).send("Incorrect username");
+        console.log(foundUser._id.toString()); // gives the id in string
 
         if (await bcrypt.compare(req.body.password, foundUser.password)) {
-            const accessToken = jwt.sign({ username: foundUser.username, role: foundUser.role }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
+            const accessToken = jwt.sign({ /*id: foundUser._id, */username: foundUser.username, role: foundUser.role }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
             const refreshToken = jwt.sign({ username: foundUser.username, role: foundUser.role }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
 
             res.cookie('token', accessToken, {
                 signed: true,
                 httpOnly: true,
                 // secure: true, 
-                sameSite: 'Strict'
+                maxAge: 15 * 60 * 1000,
+                // sameSite: 'Strict'
             });
             res.cookie('refreshToken', refreshToken, {
                 signed: true,
                 httpOnly: true,
                 // secure: true, 
-                sameSite: 'Strict'
+                maxAge: 7 * 24 * 60 * 60 * 1000,
+                // sameSite: 'Strict'
             });
 
             return res.status(200).send(`${accessToken}`); /*, ${refreshToken }`);*/
@@ -87,7 +94,7 @@ module.exports.loginUser = async (req, res) => {
 }
 
 module.exports.generateToken = (req, res) => {
-    const refreshToken = req.cookies.refreshToken;
+    const refreshToken = req.signedCookies.refreshToken;
     if (!refreshToken) return res.sendStatus(403);
 
     jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
@@ -97,11 +104,12 @@ module.exports.generateToken = (req, res) => {
         const accessToken = jwt.sign({ username: user.username, role: user.role }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15min' });
 
         res.cookie('token', accessToken, {
+            signed: true,
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "Strict",
+            // secure: process.env.NODE_ENV === "production",
+            // sameSite: "Strict",
             maxAge: 15 * 60 * 1000,
-            path: "/"
+            // path: "/"
         });
 
         req.user = user;

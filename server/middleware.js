@@ -51,11 +51,23 @@ module.exports.verifyUser = (req, res, next)=>{
     if (!token) return res.status(401).send("unauthenticated")//res.redirect("/user/login");
 
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user)=>{
-        console.log(user)
+        // console.log(user);
         if(err){
             return res.sendStatus(403);
         }
-        req.user = user;
+        req.user = user;  //storing the user details (in token) in req.user object
         next();
     });
+}
+
+module.exports.verifyRole = (role)=>{
+    return (req,res,next)=>{
+        if(req.user && req.user.role === role){
+            return next();
+            // return next(req.user?.role === role ? undefined : Object.assign(new Error("Unauthorized"), { status: 403 }));
+
+        } else {
+            return next(new Error("Unauthorized"));
+        }
+    }
 }
