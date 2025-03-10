@@ -23,8 +23,8 @@ module.exports.signUpUser = async (req, res) => {
         }
 
         // set expiry jwt and cookie, refresh token for jwt
-        const accessToken = jwt.sign({ username: newUser.username, role: newUser.role }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
-        const refreshToken = jwt.sign({ username: newUser.username, role: newUser.role }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
+        const accessToken = jwt.sign({ _id: newUser._id.toString(), username: newUser.username, role: newUser.role }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
+        const refreshToken = jwt.sign({ _id: newUser._id.toString(), username: newUser.username, role: newUser.role }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
 
         res.cookie('token', accessToken, {
             signed: true,
@@ -58,14 +58,17 @@ module.exports.loginUser = async (req, res) => {
 
         if (!req.body.username) return res.status(400).send("username might be wrong");
 
+        // find the user using its username
         let foundUser = await User.findOne({ username: req.body.username });
 
+        // check if user exists
         if (!foundUser) return res.status(400).send("Incorrect username");
         console.log(foundUser._id.toString()); // gives the id in string
 
+        // match the input password with original password, if true send token to client
         if (await bcrypt.compare(req.body.password, foundUser.password)) {
-            const accessToken = jwt.sign({ /*id: foundUser._id, */username: foundUser.username, role: foundUser.role }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
-            const refreshToken = jwt.sign({ username: foundUser.username, role: foundUser.role }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
+            const accessToken = jwt.sign({ _id: foundUser._id.toString() , username: foundUser.username, role: foundUser.role }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
+            const refreshToken = jwt.sign({ _id: foundUser._id.toString() , username: foundUser.username, role: foundUser.role }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
 
             res.cookie('token', accessToken, {
                 signed: true,
@@ -101,7 +104,8 @@ module.exports.generateToken = (req, res) => {
 
         if(err) return res.sendStatus(403);
 
-        const accessToken = jwt.sign({ username: user.username, role: user.role }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15min' });
+        // const accessToken = jwt.sign({ id: user.id, username: user.username, role: user.role }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15min' });
+        const accessToken = jwt.sign({ _id: user._id, username: user.username, role: user.role }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15min' });
 
         res.cookie('token', accessToken, {
             signed: true,
@@ -111,8 +115,7 @@ module.exports.generateToken = (req, res) => {
             maxAge: 15 * 60 * 1000,
             // path: "/"
         });
-
-        req.user = user;
-        return next();
+        // return next();
+        return res.sendStatus(200);
     })
 }

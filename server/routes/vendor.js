@@ -1,10 +1,13 @@
 const express = require("express");
 const router = express.Router();
+const mongoose = require("mongoose");
 // const redisClient = require("redis").createClient();
 // const {DEFAULT_EXPIRATION} = require("../constants/redis.js");
-const {getOrSetCache} = require("../utils/redisCache.js");
-const { verifyUser, verifyRole } = require("../middleware");
+const {setCache} = require("../utils/redisCache.js");
+const {fetchVendorDetailsFromDB} = require("../utils/vendor.js");
+const { verifyUser } = require("../middleware");
 const Vendor = require("../models/vendor");
+const User = require("../models/user.js");
 
 router.route("/dashboard")
     .get((req, res) => {
@@ -18,47 +21,27 @@ router.route("/dashboard/sales")
     })
 
 router.route("/profile")
-    .get(verifyUser, verifyRole('vendor'), async (req, res) => {
-        // verify if req.user = {username, role}
-        // console.log(req.user);
-        const vendorDetails = await getOrSetCache(`vendor:${req.user.username}`, async ()=>{
-            console.log("in callback")
-            const vendorDetails = await Vendor.aggregate([
-                {
-                    $lookup: {
-                        from: "users",
-                        localField: "userId",
-                        foreignField: "_id",
-                        as: "user"
-                    }
-                },
-                { $unwind: "$user" },
-                { $match: { "user.username": req.user.username } }, // try to match this with user._id 
-                { $limit: 1 }
-            ]);
-            
-            // console.log(vendorDetails);
-            return vendorDetails;
-        })
-
-        // const vendorDetails = await Vendor.aggregate([
-        //     {
-        //         $lookup: {
-        //             from: "users",
-        //             localField: "userId",
-        //             foreignField: "_id",
-        //             as: "user"
-        //         }
-        //     },
-        //     { $unwind: "$user" },
-        //     { $match: { "user.username": req.user.username } }, // try to match this with user._id 
-        //     { $limit: 1 }
-        // ]);
-        console.log(vendorDetails[0].user);  //for aggregate pipeline try vendorDetails[0].user._id.toString()
-        res.send("vendor's profile page");
+    .get(verifyUser, async (req, res) => {
+        res.json(req.user);
     })
-    .put(async (req, res)=>{
-    
+    .put(verifyUser, async (req, res)=>{
+        let {model, field, fieldUpdateValue} = req.query; // model specifies user or vendor, field specifies the field to be updated, fieldUpdateValue specifies the update to be made
+
+        // console.log(`model: ${model}, field: ${field}, fieldUpdateValue: ${fieldUpdateValue}`);
+
+        // update field with fieldUpdateValue
+        if(model == 'user'){
+            await User.findByIdAndUpdate(req.user.userId, {$set: {[field]: fieldUpdateValue}}); // using computed property name to dynamically determine which field is to be updated
+        } else if(model == 'vendor') {
+            await Vendor.findByIdAndUpdate(req.user._id, {$set: {[field]: fieldUpdateValue}});
+        } else {
+            return res.sendStatus(400);
+        }
+
+        // // keeping cached data up to date
+        const updatedUser = await fetchVendorDetailsFromDB(req.user.user);
+        await setCache(`vendor:${req.user.userId}`, updatedUser);
+        return res.sendStatus(200);
     })
 
 router.route("/products")
