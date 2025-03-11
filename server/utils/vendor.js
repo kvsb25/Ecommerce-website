@@ -2,28 +2,9 @@ const { getOrSetCache } = require("./redisCache.js");
 const mongoose = require("mongoose")
 const Vendor = require("../models/vendor.js");
 
+// retrieve vendor data from cache 
 module.exports.fetchVendorDetails = async (user) => {
-    const vendorDetails = await getOrSetCache(`vendor:${user._id}`,() => this.fetchVendorDetailsFromDB(user) /*async (user) => {
-        console.log("in callback")
-        const vendorDetails = await Vendor.aggregate([
-            {
-                $lookup: {
-                    from: "users",
-                    localField: "userId",
-                    foreignField: "_id",
-                    as: "user"
-                }
-            },
-            { $unwind: "$user" },
-            // { $match: { "user.username": req.user.username } }, // try to match this with user._id 
-            { $match: { "user._id": new mongoose.Types.ObjectId(user._id) } },
-            { $limit: 1 }
-        ]);
-    
-        console.log('Vendor details in callback' + vendorDetails);
-        console.log('going out of callback');
-        return vendorDetails;
-    }*/);
+    const vendorDetails = await getOrSetCache(`vendor:${user._id}`,() => this.fetchVendorDetailsFromDB(user));
     // console.log(vendorDetails);
     return vendorDetails[0];
 }
@@ -47,6 +28,7 @@ module.exports.fetchVendorDetailsFromDB = async (user) => {
         { $limit: 1 }
     ]);
 
+    if(!vendorDetails) return res.status(500).send("Internal Server error : {at fetchVendorDetailsFromDB : { at /utils/vendor.js}}");
     console.log('Vendor details in callback' + vendorDetails);
     console.log('going out of callback');
     return vendorDetails;

@@ -1,13 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const mongoose = require("mongoose");
-// const redisClient = require("redis").createClient();
-// const {DEFAULT_EXPIRATION} = require("../constants/redis.js");
-const {setCache} = require("../utils/redisCache.js");
-const {fetchVendorDetailsFromDB} = require("../utils/vendor.js");
+// const mongoose = require("mongoose");
+const vendorController = require("../controller/vendor.js");
+// const {setCache} = require("../utils/redisCache.js");
+// const {fetchVendorDetailsFromDB} = require("../utils/vendor.js");
 const { verifyUser } = require("../middleware");
-const Vendor = require("../models/vendor");
-const User = require("../models/user.js");
+// const Vendor = require("../models/vendor");
+// const User = require("../models/user.js");
 
 router.route("/dashboard")
     .get((req, res) => {
@@ -24,7 +23,8 @@ router.route("/profile")
     .get(verifyUser, async (req, res) => {
         res.json(req.user);
     })
-    .put(verifyUser, async (req, res)=>{
+    .put(verifyUser, vendorController.updateProfile
+        /*async (req, res)=>{
         let {model, field, fieldUpdateValue} = req.query; // model specifies user or vendor, field specifies the field to be updated, fieldUpdateValue specifies the update to be made
 
         // console.log(`model: ${model}, field: ${field}, fieldUpdateValue: ${fieldUpdateValue}`);
@@ -42,7 +42,8 @@ router.route("/profile")
         const updatedUser = await fetchVendorDetailsFromDB(req.user.user);
         await setCache(`vendor:${req.user.userId}`, updatedUser);
         return res.sendStatus(200);
-    })
+    }*/
+   )
 
 router.route("/products")
     .get((req, res) => {

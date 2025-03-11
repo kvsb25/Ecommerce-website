@@ -63,7 +63,8 @@ module.exports.loginUser = async (req, res) => {
 
         // check if user exists
         if (!foundUser) return res.status(400).send("Incorrect username");
-        console.log(foundUser._id.toString()); // gives the id in string
+
+        // console.log(foundUser._id.toString()); // gives the id in string
 
         // match the input password with original password, if true send token to client
         if (await bcrypt.compare(req.body.password, foundUser.password)) {

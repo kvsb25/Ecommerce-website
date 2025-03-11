@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
 const { fetchVendorDetails } = require("./utils/vendor");
+const { fetchCustomerDetails } = require("./utils/customer");
 
 // const handleRefreshToken = (req, res, next)=>{
 //     console.log(req.cookies);
@@ -73,10 +74,10 @@ module.exports.verifyUser = async (req, res, next) => {
             // change req.user to req.vendor
             req.user = await fetchVendorDetails(user); // user.id from jwt
         } else if (user && user.role === 'customer'){
-            req.user = 'customer';
+            req.user = await fetchCustomerDetails(user);
         } else {
             // throw new Error("Unauthenticated");
-            return res.sendStatus(403);
+            return res.status(403).send("Unauthorized");
         }
         console.log(req.user);
         next()
