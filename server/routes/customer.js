@@ -16,8 +16,6 @@ router.route('/profile')
     .put(verifyUser, async (req, res) => {
         let { model, field, fieldUpdateValue } = req.query; // model specifies user or vendor, field specifies the field to be updated, fieldUpdateValue specifies the update to be made
 
-        // console.log(`model: ${model}, field: ${field}, fieldUpdateValue: ${fieldUpdateValue}`);
-
         // update field with fieldUpdateValue
         if (model == 'user') {
             await User.findByIdAndUpdate(req.user.userId, { $set: { [field]: fieldUpdateValue } }); // using computed property name to dynamically determine which field is to be updated
@@ -61,11 +59,6 @@ router.route('/cart')
         // remove all the products in the cart
         res.status(200).send("httpStatus"); // make sure a mongoose middleware is declared for removing a product from cart if it's qty becomes 0
     })
-
-// router.route('/cart/:productId')
-//     .delete((req, res)=>{
-//         res.send('delete product with productId from customers cart');
-//     });
 
 router.route('/order')
     .get((req, res) => {
