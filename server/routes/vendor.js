@@ -5,6 +5,7 @@ const vendorController = require("../controller/vendor.js");
 // const {setCache} = require("../utils/redisCache.js");
 // const {fetchVendorDetailsFromDB} = require("../utils/vendor.js");
 const { verifyUser } = require("../middleware");
+const Products = require("../models/product.js");
 // const Vendor = require("../models/vendor");
 // const User = require("../models/user.js");
 
@@ -26,11 +27,19 @@ router.route("/profile")
     .put(verifyUser, vendorController.updateProfile)
 
 router.route("/products")
-    .get((req, res) => {
-        res.send("products belonging to vendor");
+    .get(verifyUser, async (req, res) => {
+        console.log(req.body);
+        const products = await Products.find({vendor: req.user._id});
+        console.log(products); // array of products
+
+        res.send(products); //products belonging to vendor
     })
-    .post((req, res) => {
+    .post(verifyUser, async (req, res) => {
         // add product belonging to vendor
+        console.log(req.body);
+        const newProduct = new Products({...req.body, vendor : req.user._id});
+        await newProduct.save();
+        console.log(newProduct);
         res.send("httpStatus");
     })
 
@@ -40,16 +49,25 @@ router.route("/products/new")
     })
 
 router.route("/products/:productId")
-    .get((req, res) => {
-        res.send("vendor specific product details page");
+    .get(verifyUser, async (req, res) => {
+        const {productId} = req.params;
+        const productDetails = await Products.findById(productId);
+        console.log(productDetails);
+        res.send(productDetails);
     })
-    .put((req, res) => {
+    .put(verifyUser, async (req, res) => {
+        const {field, fieldUpdate} = req.query;
+        const {productId} = req.params;
+        console.log(`field: ${field}; fieldUpdate: ${fieldUpdate}; productId: ${productId}`);
+        await Products.findByIdAndUpdate(productId, {$set: {[field]: fieldUpdate}});
         // update product details
         // use query string to specify what detail of a product to update
         res.send("httpStatus");
     })
-    .delete((req, res) => {
+    .delete(async (req, res) => {
         // delete product by productId
+        const {productId} = req.params;
+        await Products.findByIdAndDelete(productId);
         res.send("httpStatus");
     })
 
