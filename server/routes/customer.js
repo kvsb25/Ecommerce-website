@@ -3,6 +3,7 @@ const { verifyUser } = require("../middleware");
 const {fetchCustomerDetailsFromDB} = require("../utils/customer.js");
 const {setCache} = require("../utils/redisCache.js");
 const Customer = require("../models/customer.js");
+const Cart = require("../models/cart.js");
 const User = require("../models/user.js");
 const router = express.Router();
 
@@ -45,9 +46,26 @@ router.route('/cart')
     .get((req, res) => {
         res.status(200).send("customer cart details");
     })
-    .post((req, res) => {
+    .post(verifyUser, async (req, res) => {
         // add product to customer's cart
-        res.status(200).send('httpStatus');
+        // send productId as query string
+        // let {productId, quantity} = req.query;
+        // if(!quantity){quantity = 1}
+        const productId = req.query.productId;
+        const quantity = Number(req.query.quantity) || 1;
+
+        const cart = Cart.findById(req.user.cart);
+        
+        const existingProduct = cart.products.find(p => p.product.toString() === productId);
+
+        if (existingProduct) {
+            existingProduct.qty += quantity;
+        } else {
+            cart.products.push({ product: productId, qty: quantity });
+        }
+
+        await cart.save();
+        res.status(200).send('Cart Updated');
     })
     .put((req, res) => {
         // update cart: qty of products in cart, or remove a product from cart

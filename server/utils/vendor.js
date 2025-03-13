@@ -4,7 +4,7 @@ const Vendor = require("../models/vendor.js");
 
 // retrieve vendor data from cache 
 module.exports.fetchVendorDetails = async (user) => {
-    const vendorDetails = await getOrSetCache(`vendor:${user._id}`,() => this.fetchVendorDetailsFromDB(user));
+    const vendorDetails = await getOrSetCache(`vendor:${user._id}`,() => this.fetchVendorDetailsFromDB(user)); // user id is used, and not vendor id, for key of the stored cache
     // console.log(vendorDetails);
     return vendorDetails[0];
 }

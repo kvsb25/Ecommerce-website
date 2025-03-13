@@ -23,6 +23,7 @@ router.route("/dashboard/sales")
 router.route("/profile")
     .get(verifyUser, async (req, res) => {
         res.json(req.user);
+        // profile page
     })
     .put(verifyUser, vendorController.updateProfile)
 

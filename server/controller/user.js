@@ -5,6 +5,7 @@ const Vendor = require("../models/vendor.js");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { returnErrorMessages } = require('../utils/mongoValidation.js');
+const Cart = require('../models/cart.js');
 
 module.exports.signUpUser = async (req, res) => {
     try {
@@ -17,7 +18,9 @@ module.exports.signUpUser = async (req, res) => {
         let newUser = new User(req.body);
         await newUser.save();
         if (newUser.role === "customer") {
-            await (new Customer({ userId: newUser._id })).save();
+            const cart = new Cart();
+            await cart.save();
+            await (new Customer({ userId: newUser._id, cart: cart._id })).save();
         } else if (newUser.role === "vendor") {
             await (new Vendor({ userId: newUser._id })).save();
         }
@@ -44,8 +47,11 @@ module.exports.signUpUser = async (req, res) => {
         return res.status(200).send('user registered');
     } catch (e) {
         console.error(e);
-        console.log(e);
-        if (e.cause.errorResponse.code === 11000) return res.status(400).send("this User already Exists!");
+        console.log(e._message);
+        // if (e.cause.errorResponse.code === 11000) return res.status(400).send("this User already Exists!");
+        if(e.cause){
+            if (e.cause.errorResponse.code === 11000) return res.status(400).send("this User already Exists!");
+        }
         if (e._message === 'user validation failed') return res.status(400).send(returnErrorMessages(e));
         return res.status(403).send(e);
     }
