@@ -9,10 +9,16 @@ const Products = require("../models/product.js");
 // const Vendor = require("../models/vendor");
 // const User = require("../models/user.js");
 
-router.route("/dashboard")
+router.route("/dashboard/view")
     .get((req, res) => {
         // page will have vendor details, vendor product details, orders to be delivered
         res.send("dashboard page");
+    })
+
+router.route("/dashboard")
+    .get((req, res) => {
+        // page will have vendor details, vendor product details, orders to be delivered
+        res.send("dashboard details");
     })
 
 router.route("/dashboard/sales")
@@ -20,6 +26,10 @@ router.route("/dashboard/sales")
         res.send("sales page");
     })
 
+router.route("/profile/view")
+    .get((req, res)=>{
+        res.send("profile page");
+    })
 router.route("/profile")
     .get(verifyUser, async (req, res) => {
         res.json(req.user);

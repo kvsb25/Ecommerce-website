@@ -37,27 +37,32 @@ router.route('/profile/credentials')
         res.status(200).send("customer profile credentials page");
     })
 
+router.route('/profile/view')
+    .get((req, res)=>{
+        res.send("page for profile");
+    })
+
 router.route("/cart/view")
     .get((req, res) => {
         res.status(200).send("customer cart page");
     })
 
 router.route('/cart')
-    .get((req, res) => {
-        res.status(200).send("customer cart details");
+    .get(verifyUser, async (req, res) => {   // cart/view will send get request to this route to get the customer's cart details
+        const cart = await Cart.findById(req.user.cart);
+        res.status(200).json(cart.products);
     })
     .post(verifyUser, async (req, res) => {
         // add product to customer's cart
         // send productId as query string
-        // let {productId, quantity} = req.query;
-        // if(!quantity){quantity = 1}
+        
         const productId = req.query.productId;
         const quantity = Number(req.query.quantity) || 1;
 
-        const cart = Cart.findById(req.user.cart);
-        
-        const existingProduct = cart.products.find(p => p.product.toString() === productId);
-
+        const cart = await Cart.findById(req.user.cart);
+        console.log(`cart : ${cart}`);
+        const existingProduct = cart.products?.find(p => p.product.toString() === productId); // returns that object in products array whose product (ObjectId('...')) is equal to productId
+        if(!existingProduct) return res.status(500).send("Internal Server Error");
         if (existingProduct) {
             existingProduct.qty += quantity;
         } else {
@@ -67,10 +72,21 @@ router.route('/cart')
         await cart.save();
         res.status(200).send('Cart Updated');
     })
-    .put((req, res) => {
+    .put(verifyUser, async (req, res) => {
         // update cart: qty of products in cart, or remove a product from cart
         // use query string to specify which detail of a cart/cart's product to update
-        res.status(200).send("httpStatus");
+        const productId = req.query.productId;
+        const quantity = Number(req.query.quantity) || 1;
+        const cart = await Cart.findById(req.user.cart);
+        const product = cart.products.find(p => p.product.toString() === productId);
+        
+        if(productId || quantity || cart || product) return res.status(500).send("Internal Server Error");
+
+        product.qty += quantity;
+
+        const updated = Boolean (await cart.save()); 
+
+        if(updated) return res.status(200).send("httpStatus");
     })
     .delete((req, res) => {
         // empty the cart
@@ -78,7 +94,7 @@ router.route('/cart')
         res.status(200).send("httpStatus"); // make sure a mongoose middleware is declared for removing a product from cart if it's qty becomes 0
     })
 
-router.route('/order')
+router.route('/order/view')
     .get((req, res) => {
         res.status(200).send("customer's orders page");
     })
