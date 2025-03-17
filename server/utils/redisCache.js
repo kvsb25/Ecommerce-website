@@ -25,7 +25,8 @@ module.exports.getOrSetCache = async (key, cb) => {
         await redisClient.setEx(key, DEFAULT_EXPIRATION, JSON.stringify(freshData));
         return freshData;
     } catch (err) {
-        console.error("Redis error: ", err);
+        // console.error("Redis error: ", err);
+        throw new Error(`Redis err: ${err}`);
     }
 }
 
@@ -33,6 +34,7 @@ module.exports.setCache = async (key, value)=>{
     try{
         await redisClient.setEx(key, DEFAULT_EXPIRATION, JSON.stringify(value));
     } catch(err) {
-        console.error("Redis error: ", err);
+        // console.error("Redis error: ", err);
+        throw new Error(`Redis err: ${err}`);
     }
 }

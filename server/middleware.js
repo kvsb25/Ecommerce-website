@@ -3,6 +3,31 @@ const cookieParser = require("cookie-parser");
 const { fetchVendorDetails } = require("./utils/vendor");
 const { fetchCustomerDetails } = require("./utils/customer");
 
+module.exports.verifyUser = async (req, res, next) => {
+    try {
+        const token = req.signedCookies.token;
+        if (!token) return res.status(401).send("unauthenticated")//res.redirect("/user/login");
+
+        const user = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+
+        // get user details and store in req.user
+        if(user && user.role === 'vendor'){
+            // change req.user to req.vendor
+            req.user = await fetchVendorDetails(user); // user.id from jwt
+        } else if (user && user.role === 'customer'){
+            req.user = await fetchCustomerDetails(user);
+        } else {
+            // throw new Error("Unauthenticated");
+            return res.status(403).send("Unauthorized");
+        }
+        console.log(req.user);
+        next()
+
+    } catch (err) {
+        return res.status(401).send("Unauthenticated");
+    }
+}
+
 // const handleRefreshToken = (req, res, next)=>{
 //     console.log(req.cookies);
 //     const refreshToken = req.cookies.refreshToken;
@@ -62,55 +87,30 @@ const { fetchCustomerDetails } = require("./utils/customer");
 //     });
 // }
 
-module.exports.verifyUser = async (req, res, next) => {
-    try {
-        const token = req.signedCookies.token;
-        if (!token) return res.status(401).send("unauthenticated")//res.redirect("/user/login");
+// module.exports.verifyRole = (role) => {
+//     return (req, res, next) => {
+//         if (req.user && req.user.role === role) {
+//             return next();
+//             // return next(req.user?.role === role ? undefined : Object.assign(new Error("Unauthorized"), { status: 403 }));
 
-        const user = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+//         } else {
+//             return next(new Error("Unauthorized"));
+//             // return next(new Error({message: "Unauthorized", status: 403}))
+//         }
+//     }
+// }
 
-        // get user details and store in req.user
-        if(user && user.role === 'vendor'){
-            // change req.user to req.vendor
-            req.user = await fetchVendorDetails(user); // user.id from jwt
-        } else if (user && user.role === 'customer'){
-            req.user = await fetchCustomerDetails(user);
-        } else {
-            // throw new Error("Unauthenticated");
-            return res.status(403).send("Unauthorized");
-        }
-        console.log(req.user);
-        next()
+// module.exports.verifyRole2 = (user, role) => {
+//     // return (req, res, next) => {
+//     //     if (req.user && req.user.role === role) {
+//     //         return true
+//     //         // return next(req.user?.role === role ? undefined : Object.assign(new Error("Unauthorized"), { status: 403 }));
 
-    } catch (err) {
-        return res.status(401).send("Unauthenticated");
-    }
-}
+//     //     } else {
+//     //         return next(new Error("Unauthorized"));
+//     //         // return next(new Error({message: "Unauthorized", status: 403}))
+//     //     }
+//     // }
 
-module.exports.verifyRole = (role) => {
-    return (req, res, next) => {
-        if (req.user && req.user.role === role) {
-            return next();
-            // return next(req.user?.role === role ? undefined : Object.assign(new Error("Unauthorized"), { status: 403 }));
-
-        } else {
-            return next(new Error("Unauthorized"));
-            // return next(new Error({message: "Unauthorized", status: 403}))
-        }
-    }
-}
-
-module.exports.verifyRole2 = (user, role) => {
-    // return (req, res, next) => {
-    //     if (req.user && req.user.role === role) {
-    //         return true
-    //         // return next(req.user?.role === role ? undefined : Object.assign(new Error("Unauthorized"), { status: 403 }));
-
-    //     } else {
-    //         return next(new Error("Unauthorized"));
-    //         // return next(new Error({message: "Unauthorized", status: 403}))
-    //     }
-    // }
-
-    return (user && user.role === role);
-}
+//     return (user && user.role === role);
+// }
