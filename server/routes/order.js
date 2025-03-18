@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const {verifyUser} = require("../middleware.js");
 
+// remove a product when it's stock get's equal to zero
+
 router.route('/')
     .get((req, res)=>{
         // fetch user._id using  

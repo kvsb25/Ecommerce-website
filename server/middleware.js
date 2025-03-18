@@ -11,20 +11,56 @@ module.exports.verifyUser = async (req, res, next) => {
         const user = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
 
         // get user details and store in req.user
-        if(user && user.role === 'vendor'){
+        if (user && user.role === 'vendor') {
             // change req.user to req.vendor
             req.user = await fetchVendorDetails(user); // user.id from jwt
-        } else if (user && user.role === 'customer'){
+        } else if (user && user.role === 'customer') {
             req.user = await fetchCustomerDetails(user);
         } else {
-            // throw new Error("Unauthenticated");
-            return res.status(403).send("Unauthorized");
+            throw new Error("Unauthenticated");
+            // return res.status(403).send("Unauthorized");
         }
         console.log(req.user);
         next()
 
     } catch (err) {
-        return res.status(401).send("Unauthenticated");
+        console.log(err);
+        err.status = 401;
+        next(err);
+        // return res.status(401).send("Unauthenticated");
+    }
+}
+
+module.exports.verifyRole = (role) => {
+    
+    return (req, res, next) => {
+        console.log(req.user.user.role, " === ", role);
+        if (req.user.user.role === role) {
+            return next();
+        }
+        
+        const error = new Error("Unauthorized");
+        error.status = 403;
+        return next(error);
+    };
+
+    // return (req, res, next)=>{
+    //     return next(req.user?.role === role ? undefined : Object.assign(new Error("Unauthorized"), { status: 403 }));
+    // }
+}
+
+module.exports.verifyVendor = (req, res, next) => {
+    try {
+        console.log(`storeName: ${req.user.storeName}, storeAddress: ${req.user.storeAddress}`);
+        console.log(!req.user.storeName && !req.user.storeAddress);
+        if (!req.user.storeName && !req.user.storeAddress) {
+            throw new Error("You're unauthorized: Please register your store's name and address");
+        }
+
+        next();
+    } catch (err) {
+        err.status = 403;
+        next(err);
     }
 }
 

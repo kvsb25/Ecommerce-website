@@ -35,7 +35,7 @@ app.use((error, req, res, next)=>{
   res.status(error.status || 500);
   res.json({
     error: {message: error.message}
-  })
+  });
 })
 
 app.listen(3000, ()=>{console.log("Listening at 3000")});
