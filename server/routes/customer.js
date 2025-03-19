@@ -34,9 +34,13 @@ router.route("/cart/view")
     })
 
 router.route('/cart')
+    // get customer's cart details
     .get(verifyUser,  verifyRole('customer'), asyncWrap(customerController.getCustomerCart))
+    // add a product to customer's cart (product id, it's quantity is passed as query parameter)
     .post(verifyUser,  verifyRole('customer'), asyncWrap(customerController.addProductToCart))
+    // update a product's details in customer's cart (product id, it's quantity is passed as query parameter)
     .put(verifyUser,  verifyRole('customer'), asyncWrap(customerController.updateCustomerCart))
+    // empty customer's cart
     .delete(verifyUser,  verifyRole('customer'), asyncWrap(customerController.emptyCustomerCart));
 
 router.route('/order/view')

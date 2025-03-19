@@ -7,7 +7,7 @@ const asyncWrap = require("../utils/wrapAsync.js");
 router.route("/dashboard/view")
     .get(verifyRole('vendor'), (req, res) => {
         // page will have vendor details, vendor product details, orders to be delivered
-        res.send("dashboard page");
+        res.render("vendorDashboard");
     })
 
 router.route("/dashboard")
@@ -23,13 +23,14 @@ router.route("/dashboard/sales")
 
 router.route("/profile/view")
     .get(verifyRole('vendor'), (req, res) => {
-        res.send("profile page");
+        res.render("vendorProfile.ejs");
     })
 router.route("/profile")
+    // get vendor profile details
     .get(verifyUser, verifyRole('vendor'), async (req, res) => {
         res.json(req.user);
-        // profile page
     })
+    // update profile details (field, fieldUpdate are passed as query parameter)
     .put(verifyUser, verifyRole('vendor'), asyncWrap(vendorController.updateProfile))
 
 router.route("/products")

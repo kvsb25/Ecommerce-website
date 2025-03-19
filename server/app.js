@@ -1,5 +1,7 @@
 const express = require("express");
 const app = express();
+const path = require("path");
+const ejsMate = require("ejs-mate");
 const mongoose = require("mongoose");
 const cookieParser = require('cookie-parser');
 const userRouter = require("./routes/user.js");
@@ -14,6 +16,10 @@ async function main() {
   await mongoose.connect('mongodb://127.0.0.1:27017/ecommerceTest');
 }
 
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "../client/views"));
+app.use(express.static(path.join(__dirname, "../client/public")));
+app.engine("ejs", ejsMate);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
