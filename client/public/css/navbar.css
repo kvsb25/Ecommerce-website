@@ -45,6 +45,7 @@ nav ul li a {
 }
 .search-bar{
     border: 2px solid black;
+    border-radius: 10px;
     display:flex;
     justify-content: space-evenly;
 }

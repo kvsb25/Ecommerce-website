@@ -43,10 +43,10 @@ router.route('/cart')
     // empty customer's cart
     .delete(verifyUser,  verifyRole('customer'), asyncWrap(customerController.emptyCustomerCart));
 
-router.route('/order/view')
+router.route('/order')
     .get( verifyRole('customer'), (req, res) => {
-        //show all the order's placed by the customer
-        return res.status(200).send("customer's orders page");
+        //return all the orders belonging to the customer
+        return res.status(200).send("customer's orders");
     })
 
 module.exports = router;
