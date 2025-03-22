@@ -1,14 +1,13 @@
-<% layout("layouts/boilerplate") %>
-
+<% layout("layouts/vendorBoilerPlate") %>
 <body>
-    <div class="customer-profile-container">
+    <!-- <div class="vendor-profile-container">
         <div class="profile-options">
             <div class="option" id="orders-btn"><p>Your orders</p></div>
             <div class="option" id="account-btn"><p>Your account</p></div>
         </div>
     </div>
     <div class="default"></div>
-    <div class="customer-orders">
+    <div class="vendor-orders">
         <div class="order">
             <div class="header"></div>
             <div class="preview">
@@ -23,8 +22,8 @@
                 <div class="details"></div>
             </div>
         </div>
-    </div>
-    <div class="customer-account">
+    </div> -->
+    <div class="vendor-account">
         <div class="details">
             <div class="header">
                 <img src="/images/profileTest2.jpg" alt="profileImg">
@@ -57,8 +56,8 @@
     </div>
     <script>
         const def = document.querySelector(".default");
-        const orders = document.querySelector(".customer-orders");
-        const account = document.querySelector(".customer-account");
+        const orders = document.querySelector(".vendor-orders");
+        const account = document.querySelector(".vendor-account");
         const orders_btn = document.getElementById("orders-btn");
         const account_btn = document.getElementById("account-btn");
 
@@ -76,40 +75,5 @@
             account.style.display = "grid";
             account_btn.classList.add("option-active");
         });
-        // const doc = {
-        //     orders : document.querySelector(".customer-orders"),
-        //     account : document.querySelector(".customer-account"),
-        // }
-        // const btn = {
-        //     orders : document.querySelector("#orders-btn"),
-        //     account : document.querySelector("#account-btn"),
-        // }
-        // console.log(btn.orders);
-
-        // const hideElement = (ele) => {
-        //     doc[`${ele}`].style.display = "none";
-        //     btn[`${ele}`].classList.remove("option-active");
-        // }
-        // const showElement = (ele) => {
-        //     doc[`${ele}`].style.display = "grid";
-        //     btn[`${ele}`].classList.add("option-active");
-        // }
-
-        // btn.orders.addEventListener("click", ()=>{
-        //     hideElement(account);
-        //     showElement(orders);
-        // });
-
-        // btn.account.addEventListener("click", ()=>{
-        //     hideElement(orders);
-        //     showElement(account);
-        // })
-
-        // Object.keys(doc).forEach((ele)=>{
-        //     btn[`${ele}`].addEventListener("click", ()=>{
-
-        //     })
-        // })
-
     </script>
 </body>

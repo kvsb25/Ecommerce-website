@@ -1,9 +1,17 @@
 body{
     height:100vh;
     width: 100vw;
+    /* display:flex;
+    justify-content: center;
+    align-items: center; */
+}
+
+#body{
+    height:500px;
+    width: 100vw;
     display:flex;
     justify-content: center;
-    align-items: center;
+    align-items: start;
 }
 
 .form-div{
@@ -11,9 +19,10 @@ body{
     width: 400px;
     align-items:flex-start;
     padding: 30px;
-    /* border: 2px solid rgba(0, 0, 0, 0.875); */
-    border-radius: 15px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.875);
+    margin-top: 80px;
+    border: 1px solid #878787;
+    border-radius: 10px;
+    /* box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.875); */
 }
 
 .title{
@@ -31,7 +40,8 @@ body{
 }
 
 .btn{
-    transition: transform 0.02s ease-in !important;
+
+    transition: transform 0.05s ease-in !important;
 }
 
 .btn-div{
@@ -43,5 +53,5 @@ body{
 }
 
 .btn:active{
-    transform: scale(0.99999999);
+    transform: scale(95%);
 }

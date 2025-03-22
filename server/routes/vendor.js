@@ -40,6 +40,7 @@ router.route("/products")
 router.route("/products/new")
     .get(verifyUser, verifyRole('vendor'), verifyVendor, vendorController.newProductFormPage);
 
+// use in vendor dashboard
 router.route("/products/:productId")
     .get(verifyUser, verifyRole('vendor'), verifyVendor, asyncWrap(vendorController.getProductDetails))
     .put(verifyUser, verifyRole('vendor'), verifyVendor, asyncWrap(vendorController.updateProductDetails))

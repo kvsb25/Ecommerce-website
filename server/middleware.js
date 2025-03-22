@@ -35,6 +35,7 @@ module.exports.verifyRole = (role) => {
     
     return (req, res, next) => {
         console.log(req.user.user.role, " === ", role);
+        
         if (req.user.user.role === role) {
             return next();
         }
