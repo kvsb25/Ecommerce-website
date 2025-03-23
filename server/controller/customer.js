@@ -1,26 +1,34 @@
 const { fetchCustomerDetailsFromDB } = require("../utils/customer.js");
 const { setCache } = require("../utils/redisCache.js");
+const ExpressError = require("../utils/ExpressError.js");
 const Customer = require("../models/customer.js");
 const Cart = require("../models/cart.js");
 const User = require("../models/user.js");
 
-module.exports.updateProfile = async (req, res) => {
+module.exports.updateProfile = async (req, res, next) => {
     let { model, field, fieldUpdateValue } = req.query; // model specifies user or vendor, field specifies the field to be updated, fieldUpdateValue specifies the update to be made
 
-    // update field with fieldUpdateValue
-    if (model == 'user') {
-        await User.findByIdAndUpdate(req.user.userId, { $set: { [field]: fieldUpdateValue } }); // using computed property name to dynamically determine which field is to be updated
-    } else if (model == 'customer') {
-        await Customer.findByIdAndUpdate(req.user._id, { $set: { [field]: fieldUpdateValue } });
-    } else {
-        return res.sendStatus(400);
+    if (!model || !field || fieldUpdateValue === undefined) {
+        return res.status(400).send("Missing required parameters");
     }
 
-    // keeping cached data up to date
-    const updatedUser = await fetchCustomerDetailsFromDB(req.user.user);
-    await setCache(`customer:${req.user.userId}`, updatedUser);
-    return res.sendStatus(200);
+    // update field with fieldUpdateValue
+    const updateResult = await (model === "user"
+        ? User.findByIdAndUpdate(req.user.userId, { $set: { [field]: fieldUpdateValue } }, { new: true })
+        : Customer.findByIdAndUpdate(req.user._id, { $set: { [field]: fieldUpdateValue } }, { new: true })
+    );
 
+    if (!updateResult) {
+        return res.status(404).send("User, customer not found");
+    }
+
+    try {
+        const updatedUser = await fetchCustomerDetailsFromDB(req.user.user);
+        await setCache(`customer:${req.user.userId}`, updatedUser);
+    } catch (cacheError) {
+        return res.status(500).send("Internal Server error");
+    }
+    return res.sendStatus(200);
 }
 
 module.exports.getCustomerCart = async (req, res) => {   // cart/view will send get request to this route to get the customer's cart details
@@ -34,19 +42,22 @@ module.exports.addProductToCart = async (req, res) => {
 
     const productId = req.query.productId;
     const quantity = Number(req.query.quantity) || 1;
+    if(!productId || !quantity) return res.status(400).send("Missing required parameters");
 
     const cart = await Cart.findById(req.user.cart);
+    if(!cart) return res.status(404).send("Cart not found");
     console.log(`cart : ${cart}`);
     const existingProduct = cart.products?.find(p => p.product.toString() === productId); // returns that object in products array whose product (ObjectId('...')) is equal to productId
 
-    if (!existingProduct) return res.status(500).send("Internal Server Error");
+    if (!existingProduct) return res.status(404).send("Product not found");
     if (existingProduct) {
         existingProduct.qty += quantity;
     } else {
         cart.products.push({ product: productId, qty: quantity });
     }
 
-    await cart.save();
+    if(!(await cart.save())) return res.status(500).send("Internal Server Error");
+
     return res.status(200).send('Cart Updated');
 }
 
@@ -57,19 +68,20 @@ module.exports.updateCustomerCart = async (req, res) => {
     const quantity = Number(req.query.quantity) || 1;
     const cart = await Cart.findById(req.user.cart);
 
-    if (!cart) {
-        throw new Error("cart not found");
-    }
+    if (!cart) return res.status(404).send("Cart not found");
+    if (!productId || !quantity) return res.status(400).send("Missing required parameters");
 
     const product = cart.products.find(p => p.product.toString() === productId);
 
+    if (!product) return res.status(404).send("Product not found");
     // if (productId || quantity || cart || product) return res.status(500).send("Internal Server Error");
 
     product.qty += quantity;
 
-    await cart.save()
+    if (!(await cart.save())) return res.status(500).send("Internal Server Error");
 
-    await Cart.findByIdAndUpdate(req.user.cart, { $pull: { products: { qty: 0 } } });  //remove all the products with qty == 0
+    let update = await Cart.findByIdAndUpdate(req.user.cart, { $pull: { products: { qty: 0 } } }, {new: true});  //remove all the products with qty == 0
+    if(!update) return res.status(500).send("Internal Database Error");
 
     return res.status(200).send("httpStatus");
 }
@@ -77,7 +89,9 @@ module.exports.updateCustomerCart = async (req, res) => {
 module.exports.emptyCustomerCart = async (req, res) => {
     // empty the cart
     // remove all the products in the cart
-    await Cart.findByIdAndUpdate(req.user.cart, { $set: { products: [] } });
+    let update = await Cart.findByIdAndUpdate(req.user.cart, { $set: { products: [] } }, { new: true });
+    
+    if (!update) return res.status(500).send("Internal Database Error");
 
     return res.status(200).send("cart emptied"); // make sure a mongoose middleware is declared for removing a product from cart if it's qty becomes 0
 }

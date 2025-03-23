@@ -58,48 +58,42 @@ module.exports.signUpUser = async (req, res) => {
 }
 
 module.exports.loginUser = async (req, res) => {
+    console.log(req.body);
 
-    try {
-        console.log(req.body);
+    if (!req.body.username) return res.status(400).send("username is wrong");
 
-        if (!req.body.username) return res.status(400).send("username might be wrong");
+    // find the user using its username
+    let foundUser = await User.findOne({ username: req.body.username });
 
-        // find the user using its username
-        let foundUser = await User.findOne({ username: req.body.username });
+    // check if user exists
+    if (!foundUser) return res.status(401).send("Incorrect username");
 
-        // check if user exists
-        if (!foundUser) return res.status(400).send("Incorrect username");
+    // console.log(foundUser._id.toString()); // gives the id in string
 
-        // console.log(foundUser._id.toString()); // gives the id in string
+    // match the input password with original password, if true send token to client
+    if (await bcrypt.compare(req.body.password, foundUser.password)) {
+        const accessToken = jwt.sign({ _id: foundUser._id.toString() , username: foundUser.username, role: foundUser.role }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
+        const refreshToken = jwt.sign({ _id: foundUser._id.toString() , username: foundUser.username, role: foundUser.role }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
 
-        // match the input password with original password, if true send token to client
-        if (await bcrypt.compare(req.body.password, foundUser.password)) {
-            const accessToken = jwt.sign({ _id: foundUser._id.toString() , username: foundUser.username, role: foundUser.role }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
-            const refreshToken = jwt.sign({ _id: foundUser._id.toString() , username: foundUser.username, role: foundUser.role }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
+        res.cookie('token', accessToken, {
+            signed: true,
+            httpOnly: true,
+            // secure: true, 
+            maxAge: 15 * 60 * 1000,
+            // sameSite: 'Strict'
+        });
+        res.cookie('refreshToken', refreshToken, {
+            signed: true,
+            httpOnly: true,
+            // secure: true, 
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+            // sameSite: 'Strict'
+        });
 
-            res.cookie('token', accessToken, {
-                signed: true,
-                httpOnly: true,
-                // secure: true, 
-                maxAge: 15 * 60 * 1000,
-                // sameSite: 'Strict'
-            });
-            res.cookie('refreshToken', refreshToken, {
-                signed: true,
-                httpOnly: true,
-                // secure: true, 
-                maxAge: 7 * 24 * 60 * 60 * 1000,
-                // sameSite: 'Strict'
-            });
+        return res.status(200).send(`${accessToken}`); /*, ${refreshToken }`);*/
 
-            return res.status(200).send(`${accessToken}`); /*, ${refreshToken }`);*/
-
-        } else {
-            return res.status(403).send("wrong password");
-        }
-    } catch (err) {
-        console.error(err);
-        return res.status(500).send("server error");
+    } else {
+        return res.status(401).send("Incorrect password");
     }
 }
 

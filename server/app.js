@@ -9,6 +9,7 @@ const customerRouter = require("./routes/customer.js");
 const vendorRouter = require("./routes/vendor.js");
 const ordersRouter = require("./routes/order.js");
 const generalPlatformRouter = require("./routes/generalPlatform.js");
+const ExpressError = require("./utils/ExpressError.js");
 
 main().catch(err => console.log(err));
 
@@ -32,16 +33,13 @@ app.use("/order", ordersRouter);
 
 // Middleware for page not found
 app.use((req, res, next)=>{
-  const error = new Error("Page Not Found!");
+  const error = new ExpressError(404, "Page Not Found!");
   next(error);
 })
 
 // Error handling middleware
 app.use((error, req, res, next)=>{
-  res.status(error.status || 500);
-  res.json({
-    error: {message: error.message}
-  });
-})
+  return res.json({status: error.status, message: error.message});
+});
 
 app.listen(3000, ()=>{console.log("Listening at 3000")});

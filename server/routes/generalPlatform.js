@@ -5,7 +5,7 @@ const router = express.Router();
 router.route("/")
     .get((req, res)=>{
         // res.status(200).send("home page");
-        return res.render("vendor/profile.ejs");
+        return res.render("login.ejs");
         return res.render("store.ejs");
     });
 
