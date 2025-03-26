@@ -8,8 +8,6 @@ body{
 }
 
 .form-div{
-    height: 457.1428571429px;
-    width: 400px;
     padding: 30px;
     margin-top:10px;
     border: 1px solid #878787;
@@ -28,7 +26,7 @@ body{
 
 .title h2{
     font-size: 40px;
-    margin-bottom: 40px 0 
+    margin-bottom: 40px;
 }
 
 .form-div, .sub-form-div{

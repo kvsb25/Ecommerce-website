@@ -10,28 +10,58 @@
     <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
     crossorigin="anonymous" referrerpolicy="no-referrer" /> -->
-    <link rel="stylesheet" href="/css/login.css">
+    <link rel="stylesheet" href="/css/signup.css">
 </head>
 <body>
+    
     <div id="body">
         <div class="form-div">
             <div class="title">
-                <h2>Login</h2>
+                <h2>SignUp</h2>
+                <div class="error"></div>
             </div>
-            <div class="error"></div>
             <div class="sub-form-div">
                 <form id="login-form" method="POST" action="#">
-                    <div class="mb-3">
-                        <label for="username" class="form-label">Username</label>
+                    <div class="row">
+                        <div class="mb-3 col" id="1">
+                            <label for="1" class="form-label">firstName</label>
+                            <input name="firstName" type="text" class="form-control" id="firstName" placeholder="Enter username here">
+                        </div>
+                        <div class="mb-3 col" id="2">
+                            <label for="2" class="form-label">lastName</label>
+                            <input name="lastName" type="text" class="form-control" id="lastName" placeholder="Enter username here">
+                        </div>
+                    </div>
+                    <div class="mb-3" id="3">
+                        <label for="3" class="form-label">Username</label>
                         <input name="username" type="text" class="form-control" id="username" placeholder="Enter username here">
                     </div>
-                    <div class="mb-3">
-                        <label for="password" class="form-label">Password</label>
+                    <div class="mb-3" id="4">
+                        <label for="4" class="form-label">Password</label>
                         <input name="password" type="password" class="form-control" id="password" placeholder="Enter password here">
+                    </div>
+                    <div class="mb-3" id="5">
+                        <label for="5" class="form-label">email</label>
+                        <input name="email" type="text" class="form-control" id="email" placeholder="Enter username here">
+                    </div>
+                    <div class="row">
+                        <div class="mb-3 col" id="6">
+                            <label for="6" class="form-label">phoneNo</label>
+                            <input name="phoneNo" type="text" class="form-control" id="phoneNo" placeholder="Enter username here">
+                        </div>
+                        <div class="mb-3 col" id="7">
+                            <label for="7" class="form-label">Register as</label>
+                            <!-- <input name="username" type="text" class="form-control" id="username" placeholder="Enter username here"> -->
+                            <select name="role" id="role" class="form-control">
+                                <option selected>Select your role</option>
+                                <option value="customer">Customer</option>
+                                <option value="vendor">Vendor</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="row justify-content-md-center btn-div">
                         <div class="col-3"></div>
-                        <button type="submit" class="col btn btn-secondary">login</button>
+                        <button type="submit" class="col btn btn-secondary">Register Now</button>
                         <div class="col-3"></div>
                     </div>
                 </form>
@@ -39,7 +69,7 @@
         </div>
     </div>
     <script src="https://unpkg.com/axios@1.6.7/dist/axios.min.js"></script>
-    <script type="module" src="/js/login.js"></script>
+    <script type="module" src="/js/signup.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>

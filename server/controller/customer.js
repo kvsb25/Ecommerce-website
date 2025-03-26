@@ -93,5 +93,5 @@ module.exports.emptyCustomerCart = async (req, res) => {
     
     if (!update) return res.status(500).send("Internal Database Error");
 
-    return res.status(200).send("cart emptied"); // make sure a mongoose middleware is declared for removing a product from cart if it's qty becomes 0
+    return res.status(200).send("cart emptied");
 }

@@ -29,6 +29,8 @@ module.exports.signUpUser = async (req, res) => {
         const accessToken = jwt.sign({ _id: newUser._id.toString(), username: newUser.username, role: newUser.role }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
         const refreshToken = jwt.sign({ _id: newUser._id.toString(), username: newUser.username, role: newUser.role }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
 
+        if(!accessToken || !refreshToken) return res.status(500).send("Internal Server Error");
+
         res.cookie('token', accessToken, {
             signed: true,
             httpOnly: true,
@@ -60,7 +62,7 @@ module.exports.signUpUser = async (req, res) => {
 module.exports.loginUser = async (req, res) => {
     console.log(req.body);
 
-    if (!req.body.username) return res.status(400).send("username is wrong");
+    if (!req.body.username) return res.status(400).send("no username entered");
 
     // find the user using its username
     let foundUser = await User.findOne({ username: req.body.username });
@@ -99,7 +101,7 @@ module.exports.loginUser = async (req, res) => {
 
 module.exports.generateToken = (req, res) => {
     const refreshToken = req.signedCookies.refreshToken;
-    if (!refreshToken) return res.sendStatus(403);
+    if (!refreshToken) return res.status(403).send("No refresh token found, login again");
 
     jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
 
