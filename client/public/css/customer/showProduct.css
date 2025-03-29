@@ -1,0 +1,130 @@
+.show-main{
+    /* height: 455.68px; */
+    height: 700px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+.show-image{
+    width: 415.68px;
+    height: 415.68px;
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    padding: 20px;
+}
+.show-preview{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+}
+.show-image .show-preview img{
+    width: 100%;
+    height: 100%;
+}
+.show-product{
+    width: 50%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+.show-product > div{
+    margin-left: 20px;
+}
+.show-info{
+    width:60%;
+    height:100%;
+    margin: 0 10px;
+    padding: 40px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.show-info *{
+    margin: 10px 0;
+}
+.show-name{
+    height: 50px;
+    font-size: 40px;
+}
+.show-name hr{
+    width:100%;
+}
+.show-description{
+    margin-top: 10px;
+    font-size: small;
+    color: gray;
+}
+.show-details{
+    width: 60%;
+    margin-top: 20px;
+    border: 0.5px dotted rgba(128, 128, 128, 0.433);
+    border-radius: 10px;
+    padding: 20px 10px;
+    color:rgba(0, 0, 0, 0.693);
+}
+.show-buy{
+    width: 40%;
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid rgba(0, 0, 0, 0.433);
+    border-radius: 10px;
+    padding: 20px;
+    overflow: visible !important;
+}
+.show-amount{
+    margin : 40px 0;
+    font-size: 40px;
+}
+.show-stock{
+    color:#007600;
+    transform: scale(1.2);
+}
+.show-interactives{
+    margin: 10px 0;
+}
+.show-interactives > div{
+    margin: 15px 0;
+}
+.custom-select {
+    width: 100%;
+    padding: 10px;
+    border: 3px solid #d5d9d9;
+    border-radius: 10px;
+    background-color: #e3e6e6;
+    color: black;
+    font-size: 16px;
+    cursor: pointer;
+}
+.add-to-cart {
+    background-color: rgb(255, 255, 255);
+    color: black;
+    border: 1px solid black;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    width: 100%;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 9999 !important;
+}
+.buy-now {
+    background-color: rgb(0, 0, 0);
+    color: rgb(255, 255, 255);
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    width: 100%;
+}

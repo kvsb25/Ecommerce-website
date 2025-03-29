@@ -23,6 +23,15 @@ const productSchema = mongoose.Schema({
         min: 0, // Prevent negative stock
         default: 0
 	},
+	description: {
+		type: String,
+		required: true,
+	},
+	details:{
+		type: Map,
+		of: String,
+		required: true,
+	},
 	vendor: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: "vendor",

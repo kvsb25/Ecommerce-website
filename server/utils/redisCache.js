@@ -9,6 +9,8 @@ redisClient.on("error", (err) => console.error("Redis Error:", err));
     console.log("Connected to Redis.");
 })();
 
+// key is by which the data is stored in the cache, and cb is the function that fetches the data if it is not in the cache
+// This function will check if the data is in the cache, if it is, it will return it, if not, it will call the cb function to get the data and store it in the cache
 module.exports.getOrSetCache = async (key, cb) => {
     try {
         console.log(key);

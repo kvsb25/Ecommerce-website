@@ -46,4 +46,11 @@ router.route("/products/:productId")
     .put(verifyUser, verifyRole('vendor'), verifyVendor, asyncWrap(vendorController.updateProductDetails))
     .delete(verifyUser, verifyRole('vendor'), verifyVendor, asyncWrap(vendorController.deleteProduct))
 
+router.route("/orders/view")
+    .get(verifyUser, verifyRole('vendor'), verifyVendor, (req, res) =>{
+        res.render("vendor/orders.ejs");
+    })
+
+router.route("/orders")
+    .get(verifyUser, verifyRole('vendor'), verifyVendor, asyncWrap(vendorController.getOrdersOfVendor))
 module.exports = router;
