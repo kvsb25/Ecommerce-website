@@ -38,8 +38,8 @@ const userSchema = new mongoose.Schema({
 		type: String,
 		required: true,
 		unique: true,
-		min:10,
-		max:10
+		minLength:10,
+		maxLength:10
 	},
 	role:{
 		type: String,

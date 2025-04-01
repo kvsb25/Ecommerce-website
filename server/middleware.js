@@ -1,5 +1,4 @@
 const jwt = require("jsonwebtoken");
-const cookieParser = require("cookie-parser");
 const { fetchVendorDetails } = require("./utils/vendor");
 const { fetchCustomerDetails } = require("./utils/customer");
 

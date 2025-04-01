@@ -6,11 +6,13 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { returnErrorMessages } = require('../utils/mongoValidation.js');
 const Cart = require('../models/cart.js');
+const {signUpSchema, logInSchema} = require('../utils/joiSchema.js');
 
 module.exports.signUpUser = async (req, res) => {
     try {
         if (Object.keys(req.body).length === 0) return res.status(400).send("send valid credentials!");
-
+        const {error} = signUpSchema.validate(req.body);
+        if (error) return res.status(400).send(error.details[0].message);
         // hash and overwriting the password
         req.body.password = await bcrypt.hash(req.body.password, 10);
 
@@ -61,7 +63,8 @@ module.exports.signUpUser = async (req, res) => {
 
 module.exports.loginUser = async (req, res) => {
     console.log(req.body);
-
+    const {error} = logInSchema.validate(req.body);
+    if (error) return res.status(400).send(error.details[0].message);
     if (!req.body.username) return res.status(400).send("no username entered");
 
     // find the user using its username
