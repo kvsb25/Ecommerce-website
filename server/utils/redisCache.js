@@ -40,3 +40,8 @@ module.exports.setCache = async (key, value)=>{
         throw new Error(`Redis err: ${err}`);
     }
 }
+
+module.exports.fetchDetails = async (key, user, callback) => {
+    const details = await this.getOrSetCache(key, () => callback(user));
+    return details[0];
+}

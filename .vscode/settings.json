@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "*.ejs": "html",
+        "experiment7.C": "cpp",
+        "experiment8.C": "cpp",
+        "experiment9.C": "cpp",
+        "experiment10.C": "cpp",
+        "ADC.C": "cpp"
+    }
+}

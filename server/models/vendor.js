@@ -7,11 +7,11 @@ const vendorSchema = new mongoose.Schema({
 		required: true,
 	},
 	storeName: {
-		type: String,
+		type: String, // make address a map
 		// required: true,
 	},
 	storeAddress: {
-		type: String,
+		type: String, // make address a map
 		// required: true,
 	},
 	// gstNumber: {

@@ -3,7 +3,7 @@ document.getElementById("signup-form").addEventListener("submit", function(event
     event.preventDefault();
     let formData = new FormData(event.target);
     // console.log(formData.get("username"), formData.get("password"));
-    console.log({...Object.fromEntries(formData.entries()), "role": "vendor"});
+    console.log({...Object.fromEntries(formData.entries()), "role": "vendor"}); // set role at server side on signup route for vendor
     // axios.post("/user/signup", Object.fromEntries(formData.entries()), {withCredentials: true})
     // .then((response) => {
     //     response.status === 200 ? window.location.href = "/" : console.log(response.data);

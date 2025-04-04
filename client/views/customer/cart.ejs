@@ -1,0 +1,144 @@
+<% layout("layouts/boilerplate") %>
+
+<body>
+    <div class="page-heading">
+        <h1>Shopping Cart</h1>
+    </div>
+    <div class="cart-container">
+        <div class="cart-customer-product">
+            <div class="cart-order">
+                <div class="cart-preview">
+                    <div class="cart-image"><img src="/images/product_test_image.jpg" alt="prodImg"></div>
+                    <div class="cart-details">
+                        <div class="cart-prod-details">
+                            <div>
+                                <li>Name</li>
+                                <li>Price</li>
+                                <li>Rating</li>
+                            </div>
+                            <hr>
+                        </div>
+                        <div class="cart-quantity">
+                            <div class="cart-quantity-select">
+                                <select class="custom-select cart-qty-select">
+                                    <option selected>Select Qty</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="cart-order">
+                <div class="cart-preview">
+                    <div class="cart-image"><img src="/images/product_test_image.jpg" alt="prodImg"></div>
+                    <div class="cart-details">
+                        <div class="cart-prod-details">
+                            <div>
+                                <li>Name</li>
+                                <li>Price</li>
+                                <li>Rating</li>
+                            </div>
+                            <hr>
+                        </div>
+                        <div class="cart-quantity">
+                            <div class="cart-quantity-select">
+                                <select class="custom-select cart-qty-select">
+                                    <option selected>Select Qty</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="cart-order">
+                <div class="cart-preview">
+                    <div class="cart-image"><img src="/images/product_test_image.jpg" alt="prodImg"></div>
+                    <div class="cart-details">
+                        <div class="cart-prod-details">
+                            <div>
+                                <li>Name</li>
+                                <li>Price</li>
+                                <li>Rating</li>
+                            </div>
+                            <hr>
+                        </div>
+                        <div class="cart-quantity">
+                            <div class="cart-quantity-select">
+                                <select class="custom-select cart-qty-select">
+                                    <option selected>Select Qty</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="cart-order">
+                <div class="cart-preview">
+                    <div class="cart-image"><img src="/images/product_test_image.jpg" alt="prodImg"></div>
+                    <div class="cart-details">
+                        <div class="cart-prod-details">
+                            <div>
+                                <li>Name</li>
+                                <li>Price</li>
+                                <li>Rating</li>
+                            </div>
+                            <hr>
+                        </div>
+                        <div class="cart-quantity">
+                            <div class="cart-quantity-select">
+                                <select class="custom-select cart-qty-select">
+                                    <option selected>Select Qty</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="border"></div>
+        <div class="checkout-container">
+            <div class="cart-checkout">
+                <div class="cart-buy-box">
+                    <div class="cart-buy-amount">
+                        <span class="amount-text1">&#8377;</span>
+                        <span class="amount-amount">1500</span>
+                        <span class="amount-text2">Total</span>
+                    </div>
+                    <div class="checkout-details">
+                        <span class="details-text">4 items</span>
+                    </div>
+                    <div class="show-buy-now cart-buy-interactives">
+                        <div>
+                            <button id="move-to-checkout" class="buy-now">Check out</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="/js/customer/cart"></script>
+    <script>
+        // onclick 'move-to-checkout' button redirects to checkout page
+    </script>
+    <!-- <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script></script>
+<script>
+document.getElementById('rzp-button1').onclick = function (e) {
+    rzp1.open();
+    e.preventDefault();
+}
+</script> -->
+</body>

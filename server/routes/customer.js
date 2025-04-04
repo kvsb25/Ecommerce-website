@@ -3,6 +3,7 @@ const { verifyUser, verifyRole } = require("../middleware");
 const customerController = require("../controller/customer.js");
 const asyncWrap = require("../utils/wrapAsync.js");
 const router = express.Router();
+const Orders = require("../models/order.js");
 // const {fetchCustomerDetailsFromDB} = require("../utils/customer.js");
 // const {setCache} = require("../utils/redisCache.js");
 // const Customer = require("../models/customer.js");
@@ -44,8 +45,11 @@ router.route('/cart')
     .delete(verifyUser,  verifyRole('customer'), asyncWrap(customerController.emptyCustomerCart));
 
 router.route('/order')
-    .get( verifyRole('customer'), (req, res) => {
+    .get( verifyRole('customer'), async (req, res) => {
         //return all the orders belonging to the customer
+        const orders = await Orders.find({customer: req.user._id}).populate({path: 'products.product'});
+        console.log(orders);
+        if(!orders) return res.status(404).send("No orders found for this customer");
         return res.status(200).send("customer's orders");
     })
 
