@@ -14,13 +14,13 @@ redisClient.on("error", (err) => console.error("Redis Error:", err));
 module.exports.getOrSetCache = async (key, cb) => {
     try {
         console.log(key);
-        const data = await redisClient.get(key);
+        const data = await redisClient.get(key); // find for data using key in cache
         
         console.log((data) ? `data: ${data}` : "Cache Miss");
 
-        if (data != null) return (JSON.parse(data));
+        if (data != null) return (JSON.parse(data)); // data != null means data is in cache, so return it
         
-        const freshData = await cb();
+        const freshData = await cb(); // fetch data from the db
         
         console.log((freshData) ? `fresh data: ${freshData}` : "Cache Hit")
         
@@ -43,5 +43,6 @@ module.exports.setCache = async (key, value)=>{
 
 module.exports.fetchDetails = async (key, user, callback) => {
     const details = await this.getOrSetCache(key, () => callback(user));
-    return details[0];
+    // return details[0];
+    return Array.isArray(details) ? details[0] : details;
 }

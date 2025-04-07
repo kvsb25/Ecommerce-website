@@ -6,8 +6,8 @@
     </div>
     <div class="cart-container">
         <div class="cart-customer-product">
-            <div class="cart-order">
-                <div class="cart-preview">
+            <div class="cart-product"> <!-- product component -->
+                <div class="cart-product-preview">
                     <div class="cart-image"><img src="/images/product_test_image.jpg" alt="prodImg"></div>
                     <div class="cart-details">
                         <div class="cart-prod-details">
@@ -20,19 +20,25 @@
                         </div>
                         <div class="cart-quantity">
                             <div class="cart-quantity-select">
-                                <select class="custom-select cart-qty-select">
+                                <!-- <select class="custom-select cart-qty-select">
                                     <option selected>Select Qty</option>
                                     <option value="1">1</option>
                                     <option value="2">2</option>
                                     <option value="3">3</option>
-                                </select>
+                                </select> -->
+                                <div class="quantity-input">
+                                    <span class="delete-icon" id="delete-icon">🗑</span>
+                                    <button class="quantity-btn" onclick="changeQuantity(-1)">-</button>
+                                    <input type="text" class="quantity-value" id="quantity" value="1" readonly>
+                                    <button class="quantity-btn" onclick="changeQuantity(1)">+</button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="cart-order">
-                <div class="cart-preview">
+            <div class="cart-product">
+                <div class="cart-product-preview">
                     <div class="cart-image"><img src="/images/product_test_image.jpg" alt="prodImg"></div>
                     <div class="cart-details">
                         <div class="cart-prod-details">
@@ -45,19 +51,25 @@
                         </div>
                         <div class="cart-quantity">
                             <div class="cart-quantity-select">
-                                <select class="custom-select cart-qty-select">
+                                <!-- <select class="custom-select cart-qty-select">
                                     <option selected>Select Qty</option>
                                     <option value="1">1</option>
                                     <option value="2">2</option>
                                     <option value="3">3</option>
-                                </select>
+                                </select> -->
+                                <div class="quantity-input">
+                                    <span class="delete-icon">🗑</span>
+                                    <button class="quantity-btn" onclick="changeQuantity(-1)">-</button>
+                                    <input type="text" class="quantity-value" id="quantity" value="1" readonly>
+                                    <button class="quantity-btn" onclick="changeQuantity(1)">+</button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="cart-order">
-                <div class="cart-preview">
+            <div class="cart-product">
+                <div class="cart-product-preview">
                     <div class="cart-image"><img src="/images/product_test_image.jpg" alt="prodImg"></div>
                     <div class="cart-details">
                         <div class="cart-prod-details">
@@ -70,19 +82,25 @@
                         </div>
                         <div class="cart-quantity">
                             <div class="cart-quantity-select">
-                                <select class="custom-select cart-qty-select">
+                                <!-- <select class="custom-select cart-qty-select">
                                     <option selected>Select Qty</option>
                                     <option value="1">1</option>
                                     <option value="2">2</option>
                                     <option value="3">3</option>
-                                </select>
+                                </select> -->
+                                <div class="quantity-input">
+                                    <span class="delete-icon">🗑</span>
+                                    <button class="quantity-btn" onclick="changeQuantity(-1)">-</button>
+                                    <input type="text" class="quantity-value" id="quantity" value="1" readonly>
+                                    <button class="quantity-btn" onclick="changeQuantity(1)">+</button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="cart-order">
-                <div class="cart-preview">
+            <div class="cart-product">
+                <div class="cart-product-preview">
                     <div class="cart-image"><img src="/images/product_test_image.jpg" alt="prodImg"></div>
                     <div class="cart-details">
                         <div class="cart-prod-details">
@@ -95,12 +113,18 @@
                         </div>
                         <div class="cart-quantity">
                             <div class="cart-quantity-select">
-                                <select class="custom-select cart-qty-select">
+                                <!-- <select class="custom-select cart-qty-select">
                                     <option selected>Select Qty</option>
                                     <option value="1">1</option>
                                     <option value="2">2</option>
                                     <option value="3">3</option>
-                                </select>
+                                </select> -->
+                                <div class="quantity-input">
+                                    <span class="delete-icon">🗑</span>
+                                    <button class="quantity-btn" onclick="changeQuantity(-1)">-</button>
+                                    <input type="text" class="quantity-value" id="quantity" value="1" readonly>
+                                    <button class="quantity-btn" onclick="changeQuantity(1)">+</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -128,12 +152,25 @@
             </div>
         </div>
     </div>
+    <!-- <script src="https://checkout.razorpay.com/v1/checkout.js"></script> -->
+    <script>
+        function changeQuantity(change) {
+            let quantityInput = document.getElementById("quantity");
+            let currentValue = parseInt(quantityInput.value);
+            let newValue = currentValue + change;
+
+            if (newValue < 1) newValue = 1;
+            quantityInput.value = newValue;
+        }
+    </script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script src="/js/customer/cart"></script>
+    <script src="/js/customer/functions/cart.js"></script>
+    <script src="/js/customer/components/cart.js"></script>
+    <script src="/js/customer/cart.js"></script>
     <script>
         // onclick 'move-to-checkout' button redirects to checkout page
     </script>
-    <!-- <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <!--
 <script></script>
 <script>
 document.getElementById('rzp-button1').onclick = function (e) {
