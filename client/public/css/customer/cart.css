@@ -1,9 +1,6 @@
 body{
     overflow-y: hidden;
 }
-.loading{
-    opacity: 0.3;
-}
 .page-heading{
     display: flex;
     justify-content: flex-start;
@@ -42,7 +39,16 @@ body{
     margin: 20px;
     border: 2px solid rgb(172, 172, 172);
     border-radius: 10px;
+    transition: opacity 0.5s ease;
 }
+.cart-product.loading{
+    opacity: 0.3;
+}
+.cart-product.removing {
+    transform: translateX(-100%);
+    opacity: 0;
+    transition: transform 0.5s ease, opacity 0.5s ease;
+}  
 .cart-product .cart-header{
     height: 15%;
     width: 100%;

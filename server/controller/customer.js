@@ -33,11 +33,11 @@ module.exports.updateProfile = async (req, res, next) => {
 
 module.exports.getCustomerCart = async (req, res) => {   // cart/view will send get request to this route to get the customer's cart details
     // const user = req.user;
-    
+
     const cart = await fetchDetails(
         `cart:${req.user.cart}`,
-        req.user, 
-        async (user) => { 
+        req.user,
+        async (user) => {
             const cart = await Cart.findById(user.cart).populate({ path: 'products.product' });
             return cart;
         }
@@ -65,13 +65,13 @@ module.exports.addProductToCart = async (req, res) => {
     if (existingProduct) {
         existingProduct.qty += quantity;  // if the product already exists in the cart, then only increase or decrease it's quantity
     } else {
-        if(!cart.products) cart.products = []; // if products array is undefined, initialize it to an empty array
-        if(quantity < 0) return res.status(400).send("Quantity cannot be negative");
+        if (!cart.products) cart.products = []; // if products array is undefined, initialize it to an empty array
+        if (quantity < 0) return res.status(400).send("Quantity cannot be negative");
         cart.products.push({ product: productId, qty: quantity }); // add a new product to cart
     }
     cart.products = cart.products.filter(product => product.qty > 0); // remove products with qty <= 0
     await cart.save();
-    return res.status(200).send({update: {productId, quantity}, message: "Product added to cart"});
+    return res.status(200).send({ update: { productId, quantity }, message: "Product added to cart" });
 }
 
 module.exports.updateCustomerCart = async (req, res) => {
@@ -101,17 +101,15 @@ module.exports.updateCustomerCart = async (req, res) => {
 module.exports.deleteProdFromCart = async (req, res) => {
     // const productId = req.query.productId;
     // const all = req.query.all;
-    const {productId, all} = req.query;
+    const { productId, all } = req.query;
 
-    if(!productId && !all) return res.status(400).send("Missing required parameters");
+    if (!productId && !all) return res.status(400).send("Missing required parameters");
 
-    if(all){
+    if (all && all == "1" && all != "0") {
         let update = await Cart.findByIdAndUpdate(req.user.cart, { $set: { products: [] } }, { new: true });
         return res.status(200).send("Cart is empty!");
         // if (!update) return res.status(500).send("Internal Database Error");
-    }
-
-    if(productId){
+    } else if (productId) {
         await Cart.findByIdAndUpdate(req.user.cart, { $pull: { products: { product: productId } } }, { new: true });
         return res.status(200).send("Product removed from cart!");
     }

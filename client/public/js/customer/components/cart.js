@@ -1,24 +1,24 @@
 const product_component = (product)=>{
     const element = 
-      `<div class="cart-product" data-product-id="${product._id}"> <!-- product component -->
+      `<div class="cart-product" data-product-id=${product.product._id}> <!-- product component -->
             <div class="cart-product-preview">
                 <div class="cart-image"><img src="/images/product_test_image.jpg" alt="prodImg"></div>
                 <div class="cart-details">
                     <div class="cart-prod-details">
                         <div>
-                            <li id="product-name">${product.name}</li>
-                            <li id="product-price">${product.price}</li>
-                            <li id="product-rating>Rating</li>
+                            <li id="product-name">${product.product.name}</li>
+                            <li id="product-price">${product.product.price}</li>
+                            <li id="product-rating">Rating</li>
                         </div>
                         <hr>
                     </div>
                     <div class="cart-quantity">
                         <div class="cart-quantity-select">
                             <div class="quantity-input">
-                                <span class="delete-icon">🗑</span>
-                                <button class="quantity-btn">-</button>
-                                <input type="text" class="quantity-value" data-qty-id="${product._id}" value="${product.qty}" readonly>
-                                <button class="quantity-btn">+</button>
+                                <span class="delete-icon" id="delete-icon">🗑</span>
+                                <button class="quantity-btn" id="increase-icon">-</button>
+                                <input type="text" class="quantity-value" data-qty-id=${product.product._id} value="${product.qty}" readonly>
+                                <button class="quantity-btn" id="decrease-icon">+</button>
                             </div>
                         </div>
                     </div>
@@ -62,7 +62,7 @@ const renderCart = (products) => {
         const productHTML = product_component(product);
         const productElement = stringToElement(productHTML);
         cartContainer.appendChild(productElement);
-        total += product.price * product.qty;
+        total += product.product.price * product.qty;
     });
 
     // const total = products.reduce((total, product) => (product.price * product.qty) + total, 0);

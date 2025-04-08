@@ -5,8 +5,10 @@ let total = 0;
 const showErrorMessage = (message, remove=false) => {
     let showErrorMessage = document.querySelector(".error");
     if (showErrorMessage) {
+    
         showErrorMessage.style.display = "flex";
         showErrorMessage.innerText = message;
+
         if(remove){
             setTimeout(()=>{
                 showErrorMessage.style.display = "none";
@@ -55,7 +57,7 @@ const updateCart = async (productId, quantity) => {
         })
 }
 
-const deleteCart = async (productId, all) => {
+const deleteCart = async (productId, all = 0) => {
     return axios.delete(`/customer/cart?productId=${productId}&all=${all}`)
         .then((response)=>{
             if(response.status === 204) return {message: "No products in cart"};
@@ -76,51 +78,41 @@ const deleteCart = async (productId, all) => {
 /* for Eventlistener callback functions */
 
 // add these functions onclick of +,- icon
-const updateCartfrontend = async (event, productId, qty, quantityInput) => {
+const updateCartfrontend = async (element, productId, qty, quantityInput) => {
     try {
-        event.currentTarget.classList.toggle('loading', true);
+        element.classList.toggle('loading', true);
 
         const response = await updateCart(productId, qty);
         // const response = {name: "name"};
 
         if (!response.error) {
-            // const quantityInput = document.querySelector(`[data-qty-id="${productId}"]`);
             if (quantityInput) {
                 quantityInput.value = parseInt(quantityInput.value) + qty;
             }
         }
     } finally {
-        event.currentTarget.classList.toggle('loading', false);
+        element.classList.toggle('loading', false);
     }
+}
+
+const removeCartProduct = (element) => {
+    element.classList.add('removing');
+    setTimeout(() => {
+        element.remove();
+    }, 500);
 }
 
 // add these functions onclick of 'del' icon
-const deleteCartFrontend = async (event, productId, all) => {
+const deleteCartFrontend = async (element, productId, all) => {
     try {
-        event.currentTarget.classList.toggle('loading', true);
-        // document.querySelector(`div[data-product-id="${productId}"]`).classList.toggle('loading', true);
+        element.classList.toggle('loading', true);
 
         const response = await deleteCart(productId, all);
-        // const response = {name: "name"};
 
+        element.classList.toggle('loading', false);
         if (!response.error) {
-            // const quantityInput = document.querySelector(`[data-qty-id="${productId}"]`);
-            if (quantityInput) {
-                quantityInput.value = parseInt(quantityInput.value) + qty;
-            }
+            removeCartProduct(element);
         }
     } finally {
-        event.currentTarget.classList.toggle('loading', false);
     }
 }
-
-// const addProductToCart = async (productId, quantity) => {
-//     return axios.post(`/customer/cart?productId=${productId}&quantity=${quantity}`, {}, { withCredentials: true })
-//         .then((response)=>{
-//             if(response.status === 204) return { message: "No products in cart"};
-//             return response.data;
-//         })
-//         .catch((error)=>{
-//             return error.response?.data || { message: "Unknown error occurred" };
-//         })
-// }

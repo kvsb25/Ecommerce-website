@@ -5,7 +5,7 @@ const { fetchCustomerDetails } = require("./utils/customer");
 module.exports.verifyUser = async (req, res, next) => {
     try {
         const token = req.signedCookies.token;
-        if (!token) return res.status(401).send("unauthenticated")//res.redirect("/user/login");
+        if (!token) return res.status(401).send("unauthenticated, no token")//res.redirect("/user/login");
 
         const user = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
 
